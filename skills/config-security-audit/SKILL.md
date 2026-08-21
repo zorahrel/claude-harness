@@ -32,15 +32,22 @@ across any machine that has a `.claude` setup.
 Run the bundled scanner. Default target is the user-global config; pass a path to
 scan a project.
 
+`CLAUDE_PLUGIN_ROOT` is set for you when the skill is loaded as a plugin. If you
+cloned this repo by hand instead, `cd` into the skill directory first — the
+scanner reads no state from its own path, so either way works.
+
 ```bash
-# Scan user-global config (~/.claude + ~/.claude.json)
-bash "${CLAUDE_PLUGIN_ROOT:-$HOME/jarvis/skills-marketplace/skills/config-security-audit}/scan.sh"
+# As a plugin: scan user-global config (~/.claude + ~/.claude.json)
+bash "$CLAUDE_PLUGIN_ROOT/scan.sh"
+
+# From a clone
+cd claude-harness/skills/config-security-audit && bash scan.sh
 
 # Scan a specific project's .claude dir
-bash .../scan.sh /path/to/project/.claude
+bash scan.sh /path/to/project/.claude
 
 # Only show medium+ findings
-bash .../scan.sh --min-severity medium
+bash scan.sh --min-severity medium
 ```
 
 The script exits `0` if no HIGH findings, `1` if any HIGH finding exists — usable

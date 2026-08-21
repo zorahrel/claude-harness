@@ -16,6 +16,8 @@ knows how to load, and each one can be adopted on its own.
 | `skills/gauntlet-loop` | When to reach for that loop, when not to, and how to write a bar that can fail. |
 | `skills/grill-me` | Interrogates a plan until no fork is left open — one question at a time, recommended answer first. |
 | `skills/config-security-audit` | Audits an agent configuration (`.claude/`, MCP servers, hooks, settings) for secrets, injection surface, over-permissive allow-lists. |
+| `skills/senior-pass` | A full senior-engineer pass over an existing project: measure the bar first, map the architecture, then sweep eleven axes — and apply the fixes rather than filing them. In Italian. |
+| `skills/graphify` | Builds a persistent knowledge graph from a folder of files (code, docs, papers, images, video) and answers questions by querying it: god nodes, community detection, path and explain. In Italian. |
 | `skills/domain-model`, `skills/ubiquitous-language` | Domain-driven design: context maps, ADRs, keeping the vocabulary honest. |
 | `skills/zoom-out` | Steps back from the diff to the shape of the problem. |
 | `commands/` | `/vai` (go autonomous, report honestly), `/commit`, `/recap`, `/caveman`. In Italian. |
