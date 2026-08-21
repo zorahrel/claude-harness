@@ -37,6 +37,15 @@ MD_LOCAL_URL="${MOONDREAM_LOCAL_URL:-http://127.0.0.1:2020}"
 # perche' e' dove la teneva questa installazione prima che il file diventasse
 # configurabile.
 MD_ENV_FILE="${MOONDREAM_ENV_FILE:-$HOME/.config/moondream/.env}"
+# Chi teneva la chiave altrove prima che questo path fosse la convenzione non
+# deve accorgersi del cambio: se il file canonico non c'e', si guarda dove
+# stava. Senza questa riga il fallback silenzioso e' la Station locale, che
+# costa 4,5 GB di RAM per rispondere come la cloud.
+if [[ ! -f "$MD_ENV_FILE" && -z "${MOONDREAM_ENV_FILE:-}" ]]; then
+  for _md_legacy in "$HOME/.claude/jarvis/router/.env" "$HOME/.config/jarvis/.env"; do
+    [[ -f "$_md_legacy" ]] && { MD_ENV_FILE="$_md_legacy"; break; }
+  done
+fi
 
 if [[ -z "${MOONDREAM_API_KEY:-}" && -f "$MD_ENV_FILE" ]]; then
   MOONDREAM_API_KEY="$(grep -E '^MOONDREAM_API_KEY=' "$MD_ENV_FILE" | head -1 | cut -d= -f2- || true)"

@@ -16,6 +16,14 @@ set -uo pipefail
 
 # Stesso file che legge `moondream`: MOONDREAM_ENV_FILE lo sposta dove vuoi.
 ENV_FILE="${MOONDREAM_ENV_FILE:-$HOME/.config/moondream/.env}"
+# Stesso fallback di `moondream`: se il file canonico non c'e' ma la chiave
+# stava altrove, si scrive dove sta gia' invece di crearne un secondo che
+# nessuno legge.
+if [[ ! -f "$ENV_FILE" && -z "${MOONDREAM_ENV_FILE:-}" ]]; then
+  for _mdk_legacy in "$HOME/.claude/jarvis/router/.env" "$HOME/.config/jarvis/.env"; do
+    [[ -f "$_mdk_legacy" ]] && { ENV_FILE="$_mdk_legacy"; break; }
+  done
+fi
 CONSOLE="https://moondream.ai/c/cloud/api-keys"
 
 die() { echo "moondream-key: $*" >&2; exit 1; }
