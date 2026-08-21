@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+# Controllo del PC (RTX 3090) dal Mac. Uso: pc [wake|sleep|off|status|chat]
+# I dati della macchina stanno FUORI dal repo.
+#
+# Qui c'erano il MAC address, l'IP Tailscale e l'utente ssh scritti in chiaro:
+# su un repo pubblico e' roba che non serve a nessuno e dice troppo di una casa
+# precisa. Il MAC in particolare identifica una scheda di rete per sempre.
+#
+# Si leggono da ~/.config/pc/pc.env, che non e' versionato. Se manca, lo
+# script lo dice e spiega cosa scrivere invece di fallire con un MAC vuoto e un
+# pacchetto WoL spedito nel nulla.
+CONF="${PC_ENV:-$HOME/.config/pc/pc.env}"
+[ -f "$CONF" ] || [ -n "${PC_ENV:-}" ] || CONF="$HOME/.config/jarvis/pc.env"
+if [ ! -f "$CONF" ]; then
+  cat >&2 <<EOF
+Manca $CONF. Crealo con i dati del PC:
+
+  mkdir -p "$(dirname "$CONF")"
+  cat > "$CONF" <<'CFG'
+  MAC="aa:bb:cc:dd:ee:ff"      # MAC della scheda di rete, per il Wake-on-LAN
+  BCAST="192.168.1.255"        # broadcast della tua LAN
+  TS="100.x.y.z"               # IP Tailscale del PC (o il suo IP in LAN)
+  SSH_USER="utente"            # utente ssh sul PC
+  CFG
+
+EOF
+  exit 1
+fi
+# shellcheck disable=SC1090
+. "$CONF"
+: "${MAC:?manca MAC in $CONF}"
+: "${BCAST:?manca BCAST in $CONF}"
+: "${TS:?manca TS in $CONF}"
+SSH="${SSH_USER:-$USER}@$TS"
+
+wol() { python3 - "$MAC" "$BCAST" <<'PY'
+import socket,sys
+pkt=bytes.fromhex('FF'*6+sys.argv[1].replace(':','')*16)
+for port in (9,7):
+    s=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+    s.setsockopt(socket.SOL_SOCKET,socket.SO_BROADCAST,1)
+    s.sendto(pkt,(sys.argv[2],port)); s.sendto(pkt,('255.255.255.255',port)); s.close()
+PY
+}
+up()   { curl -s --max-time 4 "http://$TS:11434/api/version" >/dev/null 2>&1; }
+ssh_ok(){ nc -z -G 4 "$TS" 22 >/dev/null 2>&1; }
+
+case "${1:-status}" in
+  wake|on)
+    if up; then echo "già sveglio ✅"; exit 0; fi
+    echo -n "sveglio il PC "
+    for i in $(seq 1 24); do
+      wol; sleep 5; echo -n "."
+      if up; then echo " ✅ pronto ($((i*5))s)"; exit 0; fi
+    done
+    echo " ⏱ timeout — se era spento del tutto serve il BIOS (vedi note)"; exit 1 ;;
+  sleep|susp)
+    ssh -o BatchMode=yes -o ConnectTimeout=8 "$SSH" 'rundll32.exe powrprof.dll,SetSuspendState 0,1,0' >/dev/null 2>&1 &
+    sleep 20; up && echo "⚠️ ancora sveglio" || echo "sospeso ✅ (riaccendi con: pc wake)" ;;
+  reboot|riavvia)
+    ssh -o BatchMode=yes -o ConnectTimeout=8 "$SSH" 'shutdown /r /t 5' 2>&1|head -1
+    echo "riavvio in corso… (torna su fra un paio di minuti)" ;;
+  off|shutdown)
+    ssh -o BatchMode=yes -o ConnectTimeout=8 "$SSH" 'shutdown /s /t 5' 2>&1|head -1
+    echo "spengo… (da spento il risveglio richiede il BIOS: usa 'pc sleep' se vuoi riaccenderlo dal Mac)" ;;
+  status)
+    if up; then echo "PC: ✅ sveglio, Ollama pronto"
+        ssh -o BatchMode=yes -o ConnectTimeout=6 "$SSH" 'ollama ps' 2>/dev/null | tail -2
+    elif ssh_ok; then echo "PC: acceso, Ollama non risponde (firewall?)"
+    else echo "PC: 💤 sospeso o spento — 'pc wake' per svegliarlo"; fi ;;
+  chat)
+    "$0" wake >/dev/null || exit 1
+    OLLAMA_HOST=$TS:11434 ollama run qwen27b-unc ;;
+  *) echo "uso: pc [wake|sleep|off|reboot|status|chat]" ;;
+esac

@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+# Accende il PC (RTX 3090) via Wake-on-LAN e attende Ollama.
+# I dati della macchina stanno FUORI dal repo.
+#
+# Qui c'erano il MAC address, l'IP Tailscale e l'utente ssh scritti in chiaro:
+# su un repo pubblico e' roba che non serve a nessuno e dice troppo di una casa
+# precisa. Il MAC in particolare identifica una scheda di rete per sempre.
+#
+# Si leggono da ~/.config/pc/pc.env, che non e' versionato. Se manca, lo
+# script lo dice e spiega cosa scrivere invece di fallire con un MAC vuoto e un
+# pacchetto WoL spedito nel nulla.
+CONF="${PC_ENV:-$HOME/.config/pc/pc.env}"
+[ -f "$CONF" ] || [ -n "${PC_ENV:-}" ] || CONF="$HOME/.config/jarvis/pc.env"
+if [ ! -f "$CONF" ]; then
+  cat >&2 <<EOF
+Manca $CONF. Crealo con i dati del PC:
+
+  mkdir -p "$(dirname "$CONF")"
+  cat > "$CONF" <<'CFG'
+  MAC="aa:bb:cc:dd:ee:ff"      # MAC della scheda di rete, per il Wake-on-LAN
+  BCAST="192.168.1.255"        # broadcast della tua LAN
+  TS="100.x.y.z"               # IP Tailscale del PC (o il suo IP in LAN)
+  SSH_USER="utente"            # utente ssh sul PC
+  CFG
+
+EOF
+  exit 1
+fi
+# shellcheck disable=SC1090
+. "$CONF"
+: "${MAC:?manca MAC in $CONF}"
+: "${BCAST:?manca BCAST in $CONF}"
+: "${TS:?manca TS in $CONF}"
+
+
+python3 - "$MAC" "$BCAST" <<'PY'
+import socket, sys
+mac = sys.argv[1].replace(':','').replace('-','')
+pkt = bytes.fromhex('FF'*6 + mac*16)
+for port in (9, 7):
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+    s.sendto(pkt, (sys.argv[2], port))
+    s.sendto(pkt, ('255.255.255.255', port))
+    s.close()
+print("magic packet inviato a", sys.argv[1])
+PY
+
+[ "$1" = "-q" ] && exit 0
+echo -n "attendo il PC "
+for i in $(seq 1 60); do
+  if curl -s --max-time 3 "http://$TS:11434/api/version" >/dev/null 2>&1; then
+    echo " ✅ Ollama su (${i}0s circa)"; exit 0
+  fi
+  echo -n "."; sleep 5
+done
+echo " ⏱  timeout: il PC non ha risposto. WOL forse disattivato nel BIOS."
+exit 1

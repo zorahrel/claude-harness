@@ -46,6 +46,7 @@ lo dimostra**, non quando l'agente ha finito le idee.
 | `tools/moondream` | Un comando per far *guardare* un'immagine all'agente senza bruciargli il contesto: didascalie, domande libere, riquadri e punti su un oggetto. Usa la cloud gratuita di Moondream (5.000 richieste al giorno) e ripiega su un modello locale solo se serve. |
 | `tools/cablecheck.sh` | Ti dice cosa sa fare davvero un cavo USB-C che hai in mano: solo ricarica, oppure anche dati e video. Ventiquattro righe, nessuna dipendenza. |
 | `tools/ui-audit.js` | Misura la geometria vera di una pagina invece di chiedere a un modello se «sembra a posto»: elementi disallineati di pochi pixel, spaziature irregolari, sovrapposizioni, bottoni troppo piccoli da toccare. Si incolla nella console del browser e restituisce numeri, non opinioni. |
+| `tools/pc`, `tools/pc-wake` | Accendono, spengono e interrogano un secondo computer dal Mac (Wake-on-LAN + ssh), per scaricargli i lavori pesanti — un modello locale gira lì invece che sulla macchina su cui stai lavorando. I dati della tua rete stanno in un file di configurazione, non nello script. |
 
 ## La parte interessante: come finisce il ciclo
 
@@ -166,6 +167,7 @@ how to load, and each one can be adopted on its own.
 | `tools/moondream` | Lets the agent *look* at an image without burning its context: captions, free-form questions, bounding boxes, points. Cloud-first (Moondream's free tier, 5k requests/day), falls back to a local model only when it has to. |
 | `tools/cablecheck.sh` | Tells you what a USB-C cable can actually do — charge only, or data and video too. 24 lines, no dependencies. macOS. |
 | `tools/ui-audit.js` | Measures a page's real geometry instead of asking a model whether it "looks fine": near-miss alignments, irregular spacing, overlaps, tap targets under 44px. Paste it into the browser console; it returns numbers, not opinions. |
+| `tools/pc`, `tools/pc-wake` | Wake, sleep and query a second machine from your Mac (Wake-on-LAN + ssh), so heavy local models run there instead of on the laptop you are working on. Your network details live in a config file, not in the script. |
 
 **How the gauntlet loop ends.** Most loops of this shape stop on a counter and
 call it success. This one distinguishes **green** (verified against the bar,
