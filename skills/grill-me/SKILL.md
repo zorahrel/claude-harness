@@ -22,5 +22,8 @@ risultato, decidi tu e vai avanti senza chiedere.
 
 Ordine: prima i bivi da cui dipendono gli altri. Una risposta che ne chiude tre a valle vale tre giri.
 
-**Ti fermi** quando ogni ramo è risolto o esplicitamente rimandato. Chiudi con la sintesi — goal in una
-riga, decisioni prese, cosa resta fuori. Quella sintesi è esattamente l'input di `/affila`.
+**Ti fermi** quando ogni ramo è risolto o esplicitamente rimandato. Chiudi con la sintesi, e quella
+sintesi ha una forma precisa — **GOAL** (una frase) / **FUORI** (cosa resta fuori dal recinto) /
+**BARRA** (il comando che esce non-zero, la misura, l'artefatto di riferimento) / **PROVA** /
+**TRACCE** (i pezzi, con le dipendenze). È il passaggio da «ci siamo capiti» a «si può eseguire»:
+un goal che non ha una barra non può fallire, quindi non può nemmeno finire.
