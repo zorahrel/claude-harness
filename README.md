@@ -43,6 +43,8 @@ lo dimostra**, non quando l'agente ha finito le idee.
 | `skills/zoom-out` | Alza lo sguardo dal diff alla forma del problema. Utile quando non conosci quella zona di codice. |
 | `workflows/gauntlet.js` | Il motore del ciclo: un lavoratore per pezzo, un critico che esegue il controllo, si ripete finché il traguardo è verde — o si spiega perché non lo è. |
 | `commands/` | `/vai` (procedi da solo e riporta onestamente), `/spec` (sviluppo guidato dalle specifiche: proponi, approva, costruisci, verifica), `/commit`, `/recap`, `/caveman`. In italiano. |
+| `tools/moondream` | Un comando per far *guardare* un'immagine all'agente senza bruciargli il contesto: didascalie, domande libere, riquadri e punti su un oggetto. Usa la cloud gratuita di Moondream (5.000 richieste al giorno) e ripiega su un modello locale solo se serve. |
+| `tools/cablecheck.sh` | Ti dice cosa sa fare davvero un cavo USB-C che hai in mano: solo ricarica, oppure anche dati e video. Ventiquattro righe, nessuna dipendenza. |
 
 ## La parte interessante: come finisce il ciclo
 
@@ -87,6 +89,33 @@ ln -s "$PWD/commands/vai.md" ~/.claude/commands/
 ```
 
 Poi apri Claude Code e scrivi `/grill-me`: se risponde, è installata.
+
+### I tool in `tools/`
+
+Sono due comandi da terminale, indipendenti dal resto. Si mettono dove il PATH
+li vede:
+
+```bash
+ln -s "$PWD/tools/moondream"     ~/bin/
+ln -s "$PWD/tools/cablecheck.sh" ~/bin/
+```
+
+`cablecheck.sh` non va configurato: collega il cavo e lancialo.
+
+`moondream` ha bisogno di una chiave, gratuita e senza carta di credito da
+[moondream.ai](https://moondream.ai) — 5.000 richieste al giorno:
+
+```bash
+mkdir -p ~/.config/moondream
+echo "MOONDREAM_API_KEY=la-tua-chiave" > ~/.config/moondream/.env
+moondream --selftest   # esce 0 e dice «vede: Red»
+```
+
+Poi: `moondream foto.jpg` per una didascalia, `moondream foto.jpg "quante
+persone ci sono?"` per una domanda, `--detect "bottone login"` per i riquadri.
+Senza chiave cerca una [Moondream Station](https://moondream.ai/station) locale
+su `:2020`; se non trova nessuno dei due te lo dice ed esce, invece di
+inventarsi una risposta.
 
 **Se il symlink viene rifiutato:** su alcune installazioni Claude Code protegge
 `~/.claude/skills/` da scritture esterne. In quel caso installa le skill tramite
@@ -133,6 +162,8 @@ how to load, and each one can be adopted on its own.
 | `skills/zoom-out` | Steps back from the diff to the shape of the problem. |
 | `workflows/gauntlet.js` | Fan out one worker per piece, pair each with a critic that *runs* the check, loop until the bar is green — or report honestly why it isn't. |
 | `commands/` | `/vai` (go autonomous, report honestly), `/spec` (spec-driven development: propose, approve, build, verify), `/commit`, `/recap`, `/caveman`. In Italian. |
+| `tools/moondream` | Lets the agent *look* at an image without burning its context: captions, free-form questions, bounding boxes, points. Cloud-first (Moondream's free tier, 5k requests/day), falls back to a local model only when it has to. |
+| `tools/cablecheck.sh` | Tells you what a USB-C cable can actually do — charge only, or data and video too. 24 lines, no dependencies. macOS. |
 
 **How the gauntlet loop ends.** Most loops of this shape stop on a counter and
 call it success. This one distinguishes **green** (verified against the bar,
