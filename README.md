@@ -42,7 +42,7 @@ lo dimostra**, non quando l'agente ha finito le idee.
 | `skills/domain-model`, `skills/ubiquitous-language` | Domain-driven design: mappe di contesto, ADR, e tenere onesto il vocabolario del progetto. |
 | `skills/zoom-out` | Alza lo sguardo dal diff alla forma del problema. Utile quando non conosci quella zona di codice. |
 | `workflows/gauntlet.js` | Il motore del ciclo: un lavoratore per pezzo, un critico che esegue il controllo, si ripete finché il traguardo è verde — o si spiega perché non lo è. |
-| `commands/` | `/vai` (procedi da solo e riporta onestamente), `/commit`, `/recap`, `/caveman`. In italiano. |
+| `commands/` | `/vai` (procedi da solo e riporta onestamente), `/spec` (sviluppo guidato dalle specifiche: proponi, approva, costruisci, verifica), `/commit`, `/recap`, `/caveman`. In italiano. |
 
 ## La parte interessante: come finisce il ciclo
 
@@ -132,7 +132,7 @@ how to load, and each one can be adopted on its own.
 | `skills/domain-model`, `skills/ubiquitous-language` | Domain-driven design: context maps, ADRs, keeping the vocabulary honest. |
 | `skills/zoom-out` | Steps back from the diff to the shape of the problem. |
 | `workflows/gauntlet.js` | Fan out one worker per piece, pair each with a critic that *runs* the check, loop until the bar is green — or report honestly why it isn't. |
-| `commands/` | `/vai` (go autonomous, report honestly), `/commit`, `/recap`, `/caveman`. In Italian. |
+| `commands/` | `/vai` (go autonomous, report honestly), `/spec` (spec-driven development: propose, approve, build, verify), `/commit`, `/recap`, `/caveman`. In Italian. |
 
 **How the gauntlet loop ends.** Most loops of this shape stop on a counter and
 call it success. This one distinguishes **green** (verified against the bar,
