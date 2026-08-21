@@ -43,6 +43,13 @@ lo dimostra**, non quando l'agente ha finito le idee.
 | `skills/zoom-out` | Alza lo sguardo dal diff alla forma del problema. Utile quando non conosci quella zona di codice. |
 | `workflows/gauntlet.js` | Il motore del ciclo: un lavoratore per pezzo, un critico che esegue il controllo, si ripete finché il traguardo è verde — o si spiega perché non lo è. |
 | `commands/` | `/vai` (procedi da solo e riporta onestamente), `/spec` (sviluppo guidato dalle specifiche: proponi, approva, costruisci, verifica), `/commit`, `/recap`, `/caveman`. In italiano. |
+
+## Progetti vicini
+
+- **[mcp-hot-gateway](https://github.com/zorahrel/mcp-hot-gateway)** — monta e
+  smonta server MCP mentre l'agente lavora: gli strumenti compaiono subito, senza
+  riavviare la sessione. È il pezzo che tiene sotto un solo tetto tutti gli MCP
+  che questo harness usa, e si installa da solo.
 | `tools/moondream` | Un comando per far *guardare* un'immagine all'agente senza bruciargli il contesto: didascalie, domande libere, riquadri e punti su un oggetto. Usa la cloud gratuita di Moondream (5.000 richieste al giorno) e ripiega su un modello locale solo se serve. |
 | `tools/cablecheck.sh` | Ti dice cosa sa fare davvero un cavo USB-C che hai in mano: solo ricarica, oppure anche dati e video. Ventiquattro righe, nessuna dipendenza. |
 | `tools/ui-audit.js` | Misura la geometria vera di una pagina invece di chiedere a un modello se «sembra a posto»: elementi disallineati di pochi pixel, spaziature irregolari, sovrapposizioni, bottoni troppo piccoli da toccare. Si incolla nella console del browser e restituisce numeri, non opinioni. |
@@ -176,6 +183,11 @@ how to load, and each one can be adopted on its own.
 | `skills/zoom-out` | Steps back from the diff to the shape of the problem. |
 | `workflows/gauntlet.js` | Fan out one worker per piece, pair each with a critic that *runs* the check, loop until the bar is green — or report honestly why it isn't. |
 | `commands/` | `/vai` (go autonomous, report honestly), `/spec` (spec-driven development: propose, approve, build, verify), `/commit`, `/recap`, `/caveman`. In Italian. |
+
+**Nearby:** [mcp-hot-gateway](https://github.com/zorahrel/mcp-hot-gateway) mounts
+and unmounts MCP servers at runtime — tools appear instantly via
+`list_changed`, no session restart. It is what keeps every MCP this harness uses
+under one roof.
 | `tools/moondream` | Lets the agent *look* at an image without burning its context: captions, free-form questions, bounding boxes, points. Cloud-first (Moondream's free tier, 5k requests/day), falls back to a local model only when it has to. |
 | `tools/cablecheck.sh` | Tells you what a USB-C cable can actually do — charge only, or data and video too. 24 lines, no dependencies. macOS. |
 | `tools/ui-audit.js` | Measures a page's real geometry instead of asking a model whether it "looks fine": near-miss alignments, irregular spacing, overlaps, tap targets under 44px. Paste it into the browser console; it returns numbers, not opinions. |
