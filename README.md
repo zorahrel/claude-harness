@@ -113,6 +113,18 @@ echo "MOONDREAM_API_KEY=la-tua-chiave" > ~/.config/moondream/.env
 moondream --selftest   # esce 0 e dice «vede: Red»
 ```
 
+Oppure, se preferisci che la chiave venga **provata prima** di essere scritta:
+
+```bash
+ln -s "$PWD/tools/moondream-key" ~/bin/
+moondream-key            # legge la chiave dagli appunti, la verifica, poi la installa
+moondream-key --check    # controlla quella già installata
+```
+
+Esiste per un motivo preciso: una chiave scritta nel file e scoperta morta dopo
+ti lascia con un servizio che *sembra* configurato e non funziona. Qui si
+installa solo dopo che ha risposto.
+
 Poi: `moondream foto.jpg` per una didascalia, `moondream foto.jpg "quante
 persone ci sono?"` per una domanda, `--detect "bottone login"` per i riquadri.
 Senza chiave cerca una [Moondream Station](https://moondream.ai/station) locale
