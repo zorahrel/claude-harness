@@ -1,3 +1,8 @@
+---
+name: commit
+description: Analizza le modifiche e scrive un commit che spiega il perche', non il cosa
+---
+
 Analizza tutte le modifiche non ancora committate (staged e unstaged, inclusi file untracked) e procedi con questo flusso:
 
 ## 1. Analisi e raggruppamento per feature

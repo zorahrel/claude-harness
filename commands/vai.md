@@ -1,4 +1,5 @@
 ---
+name: vai
 description: Procedi autonomamente su tutto — solido e pulito, verifica, committa, riporta a fine
 argument-hint: [scope opzionale, es. "solo il bug X"]
 ---
