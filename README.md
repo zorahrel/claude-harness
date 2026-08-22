@@ -152,6 +152,10 @@ entrambe: traducili se preferisci, il comportamento non cambia.
 Le quattro regole che tutto questo esiste per far rispettare stanno in
 [RULES.md](RULES.md).
 
+## Licenza
+
+[MIT](LICENSE) — prendi quello che ti serve, anche per lavoro.
+
 ---
 
 <a name="english"></a>
